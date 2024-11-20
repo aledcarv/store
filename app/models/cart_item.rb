@@ -2,6 +2,7 @@ class CartItem < ApplicationRecord
   belongs_to :cart
   belongs_to :product
 
+  validates  :quantity, presence: true
   validates :quantity, numericality: { greater_than: 0, only_integer: true }
 
   delegate :name, :price, to: :product, prefix: :product
