@@ -2,10 +2,28 @@ require 'rails_helper'
 
 RSpec.describe Cart, type: :model do
   context 'when validating' do
+    let(:cart) { build(:cart, total_price: -1) }
+
     it 'validates numericality of total_price' do
-      cart = described_class.new(total_price: -1)
       expect(cart.valid?).to be_falsey
       expect(cart.errors[:total_price]).to include("must be greater than or equal to 0")
+    end
+  end
+
+  context '#calculate_total_price' do
+    let(:cart) { create(:cart, total_price: 0) }
+    let(:product) { create(:product, price: 15) }
+    let(:product_2) { create(:product, price: 10) }
+    let(:cart_item) { create(:cart_item, cart: cart, product: product, quantity: 2) }
+    let(:cart_item_2) { create(:cart_item, cart: cart, product: product_2, quantity: 1) }
+
+    before do
+      cart_item
+      cart_item_2
+    end
+
+    it 'calculates the total price of the products in the cart' do
+      expect(cart.calculate_total_price).to eq(40)
     end
   end
 
