@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "/carts", type: :request do
+RSpec.describe CartsController, type: :request do
   pending "TODO: Escreva os testes de comportamento do controller de carrinho necessários para cobrir a sua implmentação #{__FILE__}"
   describe "POST /add_items" do
     let(:cart) { Cart.create }
@@ -15,6 +15,23 @@ RSpec.describe "/carts", type: :request do
 
       it 'updates the quantity of the existing item in the cart' do
         expect { subject }.to change { cart_item.reload.quantity }.by(2)
+      end
+    end
+  end
+
+  describe "GET /carts" do
+    let(:cart) { create(:cart) }
+
+    context 'when the cart is empty' do
+      it 'shows cart response' do
+        get '/cart'
+
+        expect(response).to be_successful
+        expect(response.body).to eq(
+          <<-TEXT
+            { "id": #{cart.id} }
+          TEXT
+        )
       end
     end
   end
