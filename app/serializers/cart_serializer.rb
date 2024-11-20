@@ -5,7 +5,8 @@ class CartSerializer
 
   def as_json
     { id: @cart.id,
-      products: cart_items_serialized }
+      products: cart_items_serialized,
+      total_price: @cart.total_price.to_f }
   end
 
   private
