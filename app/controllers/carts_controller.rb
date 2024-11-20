@@ -4,7 +4,7 @@ class CartsController < ApplicationController
   end
 
   def update
-    AddProductInCart.new(**send_args).call
+    ::AddProductInCart.new(**send_args).call
 
     render json: CartSerializer.new(@current_cart).as_json, status: :ok
   rescue ::AddProductInCart::ProductAlreadyInCartError => e
