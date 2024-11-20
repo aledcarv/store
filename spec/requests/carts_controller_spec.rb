@@ -55,8 +55,10 @@ RSpec.describe CartsController, type: :request do
             "products" => [
               {
                 "id" => product.id,
-                "name" => product.name,
-                "price" => product.price
+                "name" => cart_item.product_name,
+                "quantity" => cart_item.quantity,
+                "unit_price" => cart_item.product_price,
+                "total_price" => cart_item.total_price
               }
             ]
           }
