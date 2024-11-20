@@ -15,6 +15,13 @@ RSpec.describe CartItem, type: :model do
       expect(cart_item.valid?).to be_falsey
       expect(cart_item.errors[:quantity]).to include("must be an integer")
     end
+
+    it 'validate quantity presence' do
+      cart_item.quantity = nil
+
+      expect(cart_item.valid?).to be_falsey
+      expect(cart_item.errors[:quantity]).to include("can't be blank")
+    end
   end
 
   context '#total_price' do
