@@ -22,16 +22,44 @@ RSpec.describe CartsController, type: :request do
   describe "GET /carts" do
     let(:cart) { create(:cart) }
 
+    before { cart }
+
     context 'when the cart is empty' do
       it 'shows cart response' do
         get '/cart'
 
         expect(response).to be_successful
-        expect(response.body).to eq(
-          <<-TEXT
-            { "id": #{cart.id} }
-          TEXT
+        expect(JSON.parse(response.body)).to eq(
+          {
+            "id" => cart.id,
+            "products" => []
+          }
         )
+      end
+
+      context 'when cart is full' do
+        let(:product) { create(:product) }
+        let(:cart_item) { create(:cart_item, cart: cart, product: product) }
+
+        before { cart_item }
+
+        it 'shows cart response' do
+          get '/cart'
+
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "id" => cart.id,
+              "products" => [
+                {
+                  "id" => product.id,
+                  "name" => product.name,
+                  "price" => product.price
+                }
+              ]
+            }
+          )
+        end
       end
     end
   end
