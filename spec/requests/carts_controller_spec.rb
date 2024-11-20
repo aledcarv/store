@@ -19,7 +19,7 @@ RSpec.describe CartsController, type: :request do
     end
   end
 
-  describe "GET /carts" do
+  describe "GET /cart" do
     context 'when the cart is empty' do
       let(:cart) { create(:cart) }
 
