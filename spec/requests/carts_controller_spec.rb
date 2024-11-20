@@ -32,7 +32,8 @@ RSpec.describe CartsController, type: :request do
         expect(JSON.parse(response.body)).to eq(
           {
             "id" => cart.id,
-            "products" => []
+            "products" => [],
+            "total_price" => cart.total_price
           }
         )
       end
@@ -60,9 +61,45 @@ RSpec.describe CartsController, type: :request do
                 "unit_price" => cart_item.product_price,
                 "total_price" => cart_item.total_price
               }
-            ]
+            ],
+            "total_price" => cart.total_price
           }
         )
+      end
+
+      context 'and has more than one product' do
+        let(:product_2) { create(:product, name: 'product B') }
+        let(:cart_item_2) { create(:cart_item, cart: cart, product: product_2) }
+
+        before { cart_item_2 }
+
+        it 'shows cart response' do
+          get '/cart'
+
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "id" => cart.id,
+              "products" => [
+                {
+                  "id" => product.id,
+                  "name" => cart_item.product_name,
+                  "quantity" => cart_item.quantity,
+                  "unit_price" => cart_item.product_price,
+                  "total_price" => cart_item.total_price
+                },
+                {
+                  "id" => product_2.id,
+                  "name" => cart_item_2.product_name,
+                  "quantity" => cart_item_2.quantity,
+                  "unit_price" => cart_item_2.product_price,
+                  "total_price" => cart_item_2.total_price
+                }
+              ],
+              "total_price" => cart.total_price
+            }
+          )
+        end
       end
     end
 
@@ -75,7 +112,8 @@ RSpec.describe CartsController, type: :request do
           expect(JSON.parse(response.body)).to eq(
             {
               "id" => Cart.last.id,
-              "products" => []
+              "products" => [],
+              "total_price" => Cart.last.total_price
             }
           )
         end
