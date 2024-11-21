@@ -13,26 +13,12 @@ class CartsController < ApplicationController
     render json: { error: e.message }, status: :bad_request
   end
 
-  # TODO: apply refactoring in the action destroy
   def destroy
-    cart_item = @current_cart.cart_items.find_by(product_id: params[:product_id])
+    RemoveCartItem.new(**send_args.slice(:cart, :product_id)).call
 
-    if cart_item
-      if cart_item.quantity > 1
-        quantity = cart_item.quantity
-
-        cart_item.update!(quantity: quantity - 1)
-        @current_cart.update!(total_price: @current_cart.calculate_total_price)
-
-        render json: CartSerializer.new(@current_cart).as_json, status: :ok
-      else
-        if cart_item.destroy!
-          render json: CartSerializer.new(@current_cart).as_json, status: :ok
-        end
-      end
-    else
-      render json: { error: 'Product must exist or was not added in the cart' }, status: :bad_request
-    end
+    render json: CartSerializer.new(@current_cart).as_json, status: :ok
+  rescue RemoveCartItem::ProductNotAvailableError => e
+    render json: { error: e.message  }, status: :bad_request
   end
 
   private
