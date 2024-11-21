@@ -199,4 +199,64 @@ RSpec.describe CartsController, type: :request do
       end
     end
   end
+
+  describe 'DELETE /cart/:product_id' do
+    let(:cart) { create(:cart) }
+    let(:product) { create(:product) }
+
+    context 'when removing a product from the cart' do
+      context 'and have only one product' do
+        let(:cart_item) do
+          create(:cart_item, cart: cart, product: product, quantity: 1)
+        end
+
+        before { cart_item }
+
+        it 'cart item is removed' do
+          delete "/cart/#{product.id}"
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "id" => cart.id,
+              "products" => [],
+              "total_price" => cart.total_price
+            }
+          )
+        end
+      end
+
+      context 'and have more than one product with the same product_id' do
+        let(:cart_item) do
+          create(:cart_item, cart: cart, product: product, quantity: 2)
+        end
+        let(:current_quantity) { 1 }
+
+        before { cart_item }
+
+        it 'reduce the quantity' do
+          delete "/cart/#{product.id}"
+
+          cart_item.reload
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "id" => cart.id,
+              "products" => [
+                {
+                  "id" => product.id,
+                  "name" => cart_item.product_name,
+                  "quantity" => current_quantity,
+                  "unit_price" => cart_item.product_price,
+                  "total_price" => cart_item.total_price
+                }
+              ],
+              "total_price" => cart.total_price.to_f
+            }
+          )
+        end
+      end
+    end
+  end
 end
