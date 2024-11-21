@@ -15,7 +15,6 @@ class AddItemsController < ApplicationController
         cart_item.update!(quantity: quantity)
         @current_cart.update!(total_price: @current_cart.calculate_total_price)
 
-        binding.b
         render json: CartSerializer.new(@current_cart).as_json, status: :ok
       else
         render json: { error: 'Product must exist' }, status: :bad_request
