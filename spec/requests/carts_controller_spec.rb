@@ -257,6 +257,24 @@ RSpec.describe CartsController, type: :request do
           )
         end
       end
+
+      context 'and added a nonexistent product_id' do
+        it 'show message error' do
+          delete '/cart/600'
+
+          expect(response).to have_http_status(:bad_request)
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'Product must exist or was not added in the cart' })
+        end
+      end
+
+      context 'and the product is not in the cart' do
+        it 'show message error' do
+          delete "/cart/#{product.id}"
+
+          expect(response).to have_http_status(:bad_request)
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'Product must exist or was not added in the cart' })
+        end
+      end
     end
   end
 end
