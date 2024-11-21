@@ -27,6 +27,18 @@ RSpec.describe Cart, type: :model do
     end
   end
 
+  context 'enums' do
+    let(:cart) { build(:cart) }
+
+    it 'defaults to active status' do
+      expect(cart).to be_active
+    end
+
+    it 'defines status values' do
+      expect(Cart.statuses).to eq({ "active" => 0, "abandoned" => 1 })
+    end
+  end
+
   describe 'mark_as_abandoned' do
     let(:shopping_cart) { create(:shopping_cart) }
 
