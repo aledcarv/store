@@ -7,7 +7,7 @@ class RemoveCartItem
   end
 
   def call
-    product_not_available_error!
+    validate_product_presence!
 
     return reduce_quantity if cart_item.quantity > 1
 
@@ -16,7 +16,7 @@ class RemoveCartItem
 
   private
 
-  def product_not_available_error!
+  def validate_product_presence!
     return if cart_item
 
     raise ProductNotAvailableError, 'Product must exist or was not added in the cart'
