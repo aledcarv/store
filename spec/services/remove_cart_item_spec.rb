@@ -30,7 +30,7 @@ RSpec.describe RemoveCartItem do
     end
   end
 
-  context 'when the product is no in the cart'do
+  context 'when the product is not in the cart' do
     it 'raises error ProductNotAvailableError' do
       expect { subject }.to raise_error(
         described_class::ProductNotAvailableError,
