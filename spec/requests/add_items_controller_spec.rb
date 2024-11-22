@@ -42,7 +42,7 @@ RSpec.describe AddItemsController, type: :request do
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body)).to eq(
           {
-            "error" => "Product must exist"
+            "error" => "Product must exist or was not added in the cart"
           }
         )
       end
@@ -55,7 +55,7 @@ RSpec.describe AddItemsController, type: :request do
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body)).to eq(
           {
-            "error" => "Product must exist"
+            "error" => "Product must be passed"
           }
         )
       end
